@@ -11,25 +11,25 @@ import (
 	"github.com/urfave/cli"
 )
 
-func connect(c *cli.Context) (*slack.Client, error) {
+func connect(c *cli.Context) (*slack.Client, *slack.AuthTestResponse, error) {
 	verbose := c.GlobalBool("verbose")
 	token := c.GlobalString("token")
 
 	if token == "" {
-		return nil, fmt.Errorf("no token specified")
+		return nil, nil, fmt.Errorf("no token specified")
 	}
 
 	client := slack.New(token, slack.OptionDebug(verbose))
 
 	authTest, err := client.AuthTest()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if verbose {
 		log.Printf("Connected to %s as %s\n", authTest.URL, authTest.User)
 	}
-	return client, nil
+	return client, authTest, nil
 }
 
 func main() {
@@ -68,7 +68,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				client, err := connect(c)
+				client, authResponse, err := connect(c)
 				if err != nil {
 					return fmt.Errorf("unable to connect: %v", err)
 				}
@@ -98,7 +98,7 @@ func main() {
 					log.Println(msg)
 				}
 
-				err = client.SetUserCustomStatus(statusText, statusEmoji, expiration)
+				err = client.SetUserCustomStatusWithUser(authResponse.UserID, statusText, statusEmoji, expiration)
 				if err != nil {
 					return fmt.Errorf("unable to set status: %v", err)
 				}
@@ -110,12 +110,12 @@ func main() {
 			Name:  "clear",
 			Usage: "Clear Slack status",
 			Action: func(c *cli.Context) error {
-				client, err := connect(c)
+				client, authResponse, err := connect(c)
 				if err != nil {
 					return fmt.Errorf("unable to connect: %v", err)
 				}
 
-				err = client.SetUserCustomStatus("", "", 0)
+				err = client.SetUserCustomStatusWithUser(authResponse.UserID, "", "", 0)
 				if err != nil {
 					return fmt.Errorf("unable to set status: %v", err)
 				}

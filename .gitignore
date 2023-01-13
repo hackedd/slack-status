@@ -1,0 +1,7 @@
+/htmlcov/
+/build/
+/dist/
+/.tox/
+*.py[cob]
+*.egg-info/
+.coverage

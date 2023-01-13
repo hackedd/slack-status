@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61", "wheel", "setuptools-scm[toml]~=6.4.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slack-status"
+version = "0.0.1"
+authors = [
+    {name = "Paul Hooijenga", email = "paulhooijenga@gmail.com"},
+]
+description = "Set your Slack status from the command line"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "requests ~= 2.28.0",
+]
+
+[project.optional-dependencies]
+develop = [
+	"pytest ~= 7.2.0",
+	"pytest-cov ~= 4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/hackedd/slack-status"
+
+[project.scripts]
+slack-status = "slackstatus.cli:main"
+
+[tool.setuptools]
+packages = ["slackstatus"]
+
+[tool.setuptools_scm]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+known_first_party = 'slackstatus'
+known_shared = ''
+sections = 'FUTURE,STDLIB,THIRDPARTY,SHARED,FIRSTPARTY,LOCALFOLDER'
+default_section = 'THIRDPARTY'
+
+[tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+namespace_packages = true
+explicit_package_bases = true
+
+[tool.coverage.run]
+omit = [
+    '*/__main__.py'
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    'pragma: no cover',
+    'if __name__ == "__main__":'
+]

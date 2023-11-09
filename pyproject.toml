@@ -37,16 +37,17 @@ packages = ["slackstatus"]
 
 [tool.setuptools_scm]
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-line_length = 88
-known_first_party = 'slackstatus'
-known_shared = ''
-sections = 'FUTURE,STDLIB,THIRDPARTY,SHARED,FIRSTPARTY,LOCALFOLDER'
-default_section = 'THIRDPARTY'
+[tool.ruff]
+fix = true
+show-fixes = true
+select = ["F", "E", "W", "I", "UP", "RUF", "C90"]
+unfixable = [
+    # Ruff fixes unused variables by deleting them, which can be annoying if you format on save.
+    "F841", "F842",
+]
+
+[tool.ruff.isort]
+known-first-party = ["slackstatus"]
 
 [tool.mypy]
 warn_redundant_casts = true
@@ -64,7 +65,6 @@ omit = [
 ]
 
 [tool.coverage.report]
-exclude_lines = [
-    'pragma: no cover',
-    'if __name__ == "__main__":'
+exclude_also = [
+    'if __name__ == "__main__":',
 ]
